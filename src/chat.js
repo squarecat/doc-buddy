@@ -49,10 +49,25 @@ export async function getChatResponse({ message, currentMemory }) {
     ];
   }
 
+  const usableHistory = history.reverse().reduce(
+    (out, h, i) => {
+      const { tokens, items } = out;
+      const itemTokens = encode(h.content).length;
+      if (tokens + itemTokens > 2000) {
+        return { tokens, hist };
+      }
+      return { tokens: tokens + itemTokens, items: [h, ...items] };
+    },
+    { tokens: 0, items: [] }
+  );
+  console.log(
+    `[bot]: using ${usableHistory.tokens} tokens of previous history`
+  );
+
   content = [...content, `\n\nWhat answer would you give the Captain?`];
   messages = [
     ...messages,
-    ...history,
+    ...usableHistory.items,
     {
       role: "user",
       content: content.join("\n"),
