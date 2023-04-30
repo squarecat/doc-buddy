@@ -1,5 +1,6 @@
 import EventEmitter from "events";
 import axios from "axios";
+import { encode } from "punycode";
 import { getEmbeddings } from "./embeddings.js";
 
 const prompt = [
