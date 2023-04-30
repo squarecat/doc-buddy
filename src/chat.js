@@ -11,6 +11,7 @@ const prompt = [
   `- Refer to the captain as "Captain".`,
   `- Always translate measurements to metric.`,
   `- Nayru's engine is a Yanmar 3YM30E`,
+  `- Nayru has a B3 30 water boiler`,
 ];
 let history = [];
 

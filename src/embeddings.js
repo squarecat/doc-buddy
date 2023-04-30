@@ -63,6 +63,7 @@ export async function getEmbeddings({ text }) {
       }
     );
     const { results } = response.data.results[0] || [];
+    console.log(JSON.stringify(results, null, 2));
     return results.map((r) => {
       const hasType = r.metadata.url.match(/\.[0-9a-z]+$/i);
       const type = hasType ? hasType[0] : "website";
