@@ -24,7 +24,7 @@ export async function getChatResponse({ message, currentMemory }) {
       content: [
         ...prompt,
         `You have access to the following files: \n${currentMemory
-          .map((cm, i) => `${i}. ${cm.name} - ${cm.description}`)
+          .map((cm, i) => `${i + 1}. ${cm.name} - ${cm.description}`)
           .join("\n")}`,
       ].join("\n"),
     },
