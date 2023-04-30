@@ -43,7 +43,7 @@ export async function getChatResponse({ message, currentMemory }) {
   if (embeddings.length) {
     content = [
       ...content,
-      `Here is some background information related to the next question from Nayru's manuals:`,
+      `Here is some background information related to the next question from Nayru's manuals. If it doesn't seem relevant then ignore it:`,
       ...embeddings.reduce(
         (out, e) => [...out, `File name: ${e.sourceUrl}`, `Content: ${e.text}`],
         []

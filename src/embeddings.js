@@ -27,6 +27,9 @@ export async function saveEmbeddingsFile({ file }) {
           "content-type": "multipart/form-data",
           ...formData.getHeaders(),
         },
+      },
+      {
+        timeout: 300000, // 5 minutes
       }
     );
     const { ids } = response.data;
@@ -64,16 +67,18 @@ export async function getEmbeddings({ text }) {
     );
     const { results } = response.data.results[0] || [];
     console.log(JSON.stringify(results, null, 2));
-    return results.map((r) => {
-      const hasType = r.metadata.url.match(/\.[0-9a-z]+$/i);
-      const type = hasType ? hasType[0] : "website";
-      const isFile = [".pdf", ".txt", ".docx", ".pptx", ".md"].includes(type);
-      return {
-        text: r.text,
-        sourceUrl: r.metadata.url,
-        type: isFile ? "file" : "website",
-      };
-    });
+    return results
+      .filter((r) => r.score > 0.8)
+      .map((r) => {
+        const hasType = r.metadata.url.match(/\.[0-9a-z]+$/i);
+        const type = hasType ? hasType[0] : "website";
+        const isFile = [".pdf", ".txt", ".docx", ".pptx", ".md"].includes(type);
+        return {
+          text: r.text,
+          sourceUrl: r.metadata.url,
+          type: isFile ? "file" : "website",
+        };
+      });
   } catch (err) {
     console.error(
       err.stack ||
