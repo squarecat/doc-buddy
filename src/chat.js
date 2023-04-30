@@ -131,7 +131,7 @@ export async function getChatResponse({ message, currentMemory }) {
       res.emit("error", error);
     });
   } catch (err) {
-    console.error(err);
+    console.error(err.response.data);
     res.emit("error", new Error("Failed to get response from OpenAI"));
   }
   return res;
