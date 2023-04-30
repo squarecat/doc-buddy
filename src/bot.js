@@ -70,3 +70,7 @@ export async function launch() {
   console.log(JSON.stringify(currentMemory, null, 2));
   bot.launch();
 }
+
+export async function memory() {
+  return currentMemory;
+}
