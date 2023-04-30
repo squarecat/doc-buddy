@@ -32,7 +32,7 @@ const onMessage = async (ctx) => {
       responseType: "arraybuffer",
     });
     const buffer = Buffer.from(fileResponse.data, "binary");
-    ctx.reply(`Wait a sec while I take a look at that...`);
+
     await saveEmbeddingsFile({
       file: { raw: buffer, name: document.file_name },
     });
