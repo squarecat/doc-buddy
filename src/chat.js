@@ -55,7 +55,7 @@ export async function getChatResponse({ message, currentMemory }) {
       const { tokens, items } = out;
       const itemTokens = encode(h.content).length;
       if (tokens + itemTokens > 2000) {
-        return { tokens, hist };
+        return { tokens, items };
       }
       return { tokens: tokens + itemTokens, items: [h, ...items] };
     },
