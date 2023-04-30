@@ -7,7 +7,6 @@ import {
 import { Telegraf } from "telegraf";
 import axios from "axios";
 import dotenv from "dotenv";
-import fs from "fs";
 import { getChatResponse } from "./chat.js";
 import { saveEmbeddingsFile } from "./embeddings.js";
 

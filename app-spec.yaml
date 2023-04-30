@@ -1,64 +1,88 @@
-name: nayru
-region: sfo
 alerts:
-  - rule: DEPLOYMENT_FAILED
-  - rule: DOMAIN_FAILED
-
+- rule: DEPLOYMENT_FAILED
+- rule: DOMAIN_FAILED
+ingress:
+  rules:
+  - component:
+      name: nayru-chat
+    match:
+      path:
+        prefix: /
+name: nayru-chat
+region: lon
 services:
-  - environment_slug: node-js
-    name: nayru-chat
-    envs:
-      - key: SERVER_HOST
-        scope: RUN_TIME
-        value: localhost
-      - key: SERVER_PORT
-        scope: RUN_TIME
-        value: "3113"
-      - key: OPENAI_KEY
-        scope: RUN_TIME
-        value: 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
-      - key: EMBEDDINGS_URL
-        scope: RUN_TIME
-        value: http://localhost:8000
-      - key: EMBEDDINGS_KEY
-        scope: RUN_TIME
-        value: a2b40c6988605c5658ed653c2a063b74
-    github:
-      branch: main
-      deploy_on_push: true
-      repo: squarecat/nayru-chat
-    http_port: 3113
-    instance_count: 2
-    instance_size_slug: professional-xs
-    run_command: node index.js
-    source_dir: /
-  - environment_slug: node-js
-    name: ellie-embeddings
-    github:
-      branch: main
-      deploy_on_push: true
-      repo: squarecat/chatgpt-retrieval-plugin.git
-    http_port: 3114
-    instance_count: 2
-    instance_size_slug: professional-xs
-    run_command: poetry run start
-    source_dir: /
-    envs:
-      - key: BEARER_TOKEN
-        scope: RUN_TIME
-        value: a2b40c6988605c5658ed653c2a063b74
-      - key: OPENAI_API_KEY
-        scope: RUN_TIME
-        value: 4ViTLJ3qPCWdJWD83V0sT3BlbkFJga2YlzoCxI3iBFLXAHin
-      - key: DATASTORE
-        scope: RUN_TIME
-        value: pinecone
-      - key: PINECONE_API_KEY
-        scope: RUN_TIME
-        value: 42a3a9c9-ad76-4602-8ff3-d88c0cbe047a
-      - key: PINECONE_ENVIRONMENT
-        scope: RUN_TIME
-        value: northamerica-northeast1-gcp
-      - key: PINECONE_INDEX
-        scope: RUN_TIME
-        value: nayru_memory
+- environment_slug: node-js
+  envs:
+  - key: OPENAI_KEY
+    scope: RUN_TIME
+    value: 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  
+  - key: SERVER_PORT
+    scope: RUN_TIME
+    value: "8080"
+  - key: STORAGE_NAME
+    scope: RUN_TIME
+    value: nayru
+  - key: STORAGE_URL
+    scope: RUN_TIME
+    value: https://sfo3.digitaloceanspaces.com/
+  - key: STORAGE_KEY
+    scope: RUN_TIME
+    value: PVQVCBWLDA7MJ42IK6A5
+  - key: STORAGE_SECRET
+    scope: RUN_TIME
+    value: 71/g0HUQm//EcewxOfn5yVtkaL93ANx5SyRXK6XKyQ4
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: squarecat/nayru-chat
+  http_port: 8080
+  instance_count: 1
+  instance_size_slug: basic-xs
+  name: nayru-chat
+  run_command: node index.js
+  source_dir: /
+
+- environment_slug: node-js
+  name: nayru-memory
+  github:
+    branch: main
+    deploy_on_push: true
+    repo: squarecat/chatgpt-retrieval-plugin.git
+  http_port: 3114
+  instance_count: 2
+  instance_size_slug: professional-xs
+  run_command: poetry run start
+  source_dir: /
+  envs:
+    - key: BEARER_TOKEN
+      scope: RUN_TIME
+      value: a2b40c6988605c5658ed653c2a063b74
+    - key: OPENAI_API_KEY
+      scope: RUN_TIME
+      value: 4ViTLJ3qPCWdJWD83V0sT3BlbkFJga2YlzoCxI3iBFLXAHin
+    - key: DATASTORE
+      scope: RUN_TIME
+      value: pinecone
+    - key: PINECONE_API_KEY
+      scope: RUN_TIME
+      value: 42a3a9c9-ad76-4602-8ff3-d88c0cbe047a
+    - key: PINECONE_ENVIRONMENT
+      scope: RUN_TIME
+      value: northamerica-northeast1-gcp
+    - key: PINECONE_INDEX
+      scope: RUN_TIME
+      value: nayru_memory
+
+ingress:
+  rules:
+  - component:
+      name: nayru-chat
+    match:
+      path:
+        prefix: /
+  - component:
+      name: nayru-memory
+      rewrite: /
+    match:
+      path:
+        prefix: /memory
