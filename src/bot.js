@@ -18,7 +18,8 @@ export const bot = new Telegraf(process.env.TELEGRAM_TOKEN);
 const { telegram } = bot;
 
 bot.hears("hi", (ctx) => ctx.reply("Hey there"));
-bot.on("message", async (ctx) => {
+
+const onMessage = async (ctx) => {
   const document = ctx.message.document;
   if (document) {
     const fileId = document.file_id;
@@ -49,6 +50,7 @@ bot.on("message", async (ctx) => {
     currentFile = null;
     saveMemoryIndex(currentMemory);
   } else {
+    ctx.replyWithChatAction("typing");
     const chatEmitter = await getChatResponse({
       message: ctx.message.text,
       currentMemory,
@@ -58,6 +60,14 @@ bot.on("message", async (ctx) => {
       ctx.reply(`I had some trouble with that: ${d.message}`)
     );
   }
+};
+
+bot.on("text", onMessage);
+bot.on("message", onMessage);
+bot.command("forget", (ctx) => {
+  ctx.reply(
+    "Okay, lets stop the current conversation and talk about something else."
+  );
 });
 
 bot.catch((err, ctx) => {
