@@ -13,7 +13,7 @@ Useful in a variety of situations where you have too much information to learn a
 
 ### Optional Requirements:
 
-- A DigitalOcean account if you want to deploy directly to DigitalOceans App Platform. If you don't already have one, you can sign up at https://cloud.digitalocean.com/registrations/new.
+- A DigitalOcean account if you want to deploy directly to DigitalOceans App Platform. If you don't already have one, you can sign up [here](https://www.digitalocean.com/?refcode=1f67a87765d4).
 
 ## Getting Started
 
@@ -29,7 +29,7 @@ Useful in a variety of situations where you have too much information to learn a
 
 Click this button to deploy the app to the DigitalOcean App Platform. If you are not logged in, you will be prompted to log in with your DigitalOcean account.
 
-[![Deploy to DigitalOcean](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/squarecat/doc-buddy/tree/main)
+[![Deploy to DigitalOcean](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/squarecat/doc-buddy/tree/main&refcode=1f67a87765d4)
 
 ## Environment Variables
 
@@ -65,3 +65,5 @@ You can edit the prompt that is given to the assistant in the `prompt.md` file.
 Sponsored by [Ellie - Your AI Email assistant](https://tryellie.com). Ellie learns from your writing style and crafts replies as if they were written by you! 
 
 [![Ellie example](./imgs/ellie.png)](https://tryellie.com?ref=doc-buddy)
+
+[![DigitalOcean Referral Badge](https://web-platforms.sfo2.digitaloceanspaces.com/WWW/Badge%203.svg)](https://www.digitalocean.com/?refcode=1f67a87765d4&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge)
