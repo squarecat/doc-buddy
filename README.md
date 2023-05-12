@@ -23,7 +23,26 @@ Click this button to deploy the app to the DigitalOcean App Platform. If you are
 
 [![Deploy to DigitalOcean](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/squarecat/doc-buddy/tree/main)
 
-## Uploading documentation
+## Environment Variables
+
+You'll need to add these to the DigitalOcean app env variables.
+
+| Key | Default | Description
+| ------------- | ------------- |
+| OPEN_AI_MODEL  | "gpt-3.5-turbo" | The AI model that the assistant will use to reply. GPT-3.5-Turbo will be good enough for most cases |
+| OPEN_AI_KEY  | | |
+| TELEGRAM_TOKEN | | The token you get from BotFather | 
+| EMBEDDINGS_BEARER_TOKEN  |   | |
+| STORAGE_NAME  | | |
+| STORAGE_URL  |  | |
+| STORAGE_KEY |  | |
+| STORAGE_SECRET  | | |
+| DATASTORE | pinecone  | |
+| PINECONE_API_KEY  |  | |
+| PINECONE_ENVIRONMENT | | |
+| PINECONE_INDEX | | |
+
+## Usage - uploading documentation
 
 Simply upload a doc to the Telegram chat and doc buddy will learn the contents of that document.
 
