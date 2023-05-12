@@ -24,6 +24,9 @@ Useful in a variety of situations where you have too much information to learn a
 5. Create a Digital Ocean Space (or other s3 like storage). This is used to store the documents uploaded in case they need to be reindexed later.
 6. Click the button below to deploy directly as a Digital Ocean App. This is a simple step-by-step process that takes <5 minutes.
 7. On the Environemnt Variables page of the Digital Ocean App creation process, replace the default values with the values you've generated.
+8. The app should start automatically and connect to the Telegram API
+9. Open a chat with the bot you created, try chatting to it!
+
 
 ## Deploying the App
 
