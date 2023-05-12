@@ -50,7 +50,9 @@ const onMessage = async (ctx) => {
     currentFile = null;
     saveMemoryIndex(currentMemory);
   } else {
-    ctx.replyWithChatAction("typing");
+    const typingAnimation = setInterval(() => {
+      ctx.replyWithChatAction("typing");
+    }, 2000);
     const chatEmitter = await getChatResponse({
       message: ctx.message.text,
       currentMemory,
@@ -59,6 +61,7 @@ const onMessage = async (ctx) => {
     chatEmitter.on("error", (d) =>
       ctx.reply(`I had some trouble with that: ${d.message}`)
     );
+    chatEmitter.on("done", () => clearInterval(typingAnimation));
   }
 };
 
