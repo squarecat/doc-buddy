@@ -27,7 +27,7 @@ Click this button to deploy the app to the DigitalOcean App Platform. If you are
 
 You'll need to add these to the DigitalOcean app env variables.
 
-| Key | Default | Description
+| Key | Default | Description   |
 | ------------- | ------------- |
 | OPEN_AI_MODEL  | "gpt-3.5-turbo" | The AI model that the assistant will use to reply. GPT-3.5-Turbo will be good enough for most cases |
 | OPEN_AI_KEY  | | |
