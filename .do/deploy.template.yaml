@@ -1,5 +1,12 @@
 spec:
   name: documentation-buddy
+  envs:
+    - key: OPEN_AI_KEY
+      scope: RUN_TIME
+      value: "${OPEN_AI_KEY}"
+    - key: BEARER_TOKEN
+      scope: RUN_TIME
+      value: "${BEARER_TOKEN}"
   ingress:
     rules:
       - component:
@@ -21,12 +28,6 @@ spec:
         - key: TELEGRAM_TOKEN
           scope: RUN_TIME
           value: "${TELEGRAM_TOKEN}"
-        - key: OPEN_AI_KEY
-          scope: RUN_TIME
-          value: "${OPEN_AI_KEY}"
-        - key: EMBEDDINGS_BEARER_TOKEN
-          scope: RUN_TIME
-          value: "${EMBEDDINGS_BEARER_TOKEN}"
         - key: EMBEDDINGS_URL
           scope: RUN_TIME
           value: "${APP_URL}/memory"
@@ -48,10 +49,10 @@ spec:
       github:
         branch: main
         deploy_on_push: true
-        repo: squarecat/documentation-buddy
+        repo: squarecat/doc-buddy
       http_port: 8080
       instance_count: 1
-      instance_size_slug: basic-xs
+      instance_size_slug: basic-xxs
       name: chat
       run_command: node index.js
       source_dir: /

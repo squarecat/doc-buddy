@@ -3,7 +3,7 @@ import axios from "axios";
 
 export async function saveEmbeddingsFile({ file }) {
   const embeddingsUrl = process.env.EMBEDDINGS_URL;
-  const embeddingsKey = process.env.EMBEDDINGS_BEARER_TOKEN;
+  const embeddingsKey = process.env.BEARER_TOKEN;
 
   console.log(`Embedding file ${file.name} to ${embeddingsUrl}/upsert-file`);
   try {

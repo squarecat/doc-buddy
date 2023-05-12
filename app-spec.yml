@@ -1,19 +1,26 @@
+name: documentation-buddy
 alerts:
   - rule: DEPLOYMENT_FAILED
   - rule: DOMAIN_FAILED
 ingress:
   rules:
     - component:
-        name: documentation-buddy-chat
+        name: chat
       match:
         path:
           prefix: /
     - component:
-        name: documentation-buddy-memory
+        name: memory
       match:
         path:
           prefix: /memory
-name: documentation-buddy-chat
+envs:
+  - key: OPEN_AI_KEY
+    scope: RUN_TIME
+    value: "${OPEN_AI_KEY}"
+  - key: BEARER_TOKEN
+    scope: RUN_TIME
+    value: "${BEARER_TOKEN}"
 region: sfo
 services:
   - environment_slug: node-js
@@ -24,12 +31,6 @@ services:
       - key: TELEGRAM_TOKEN
         scope: RUN_TIME
         value: "${TELEGRAM_TOKEN}"
-      - key: OPEN_AI_KEY
-        scope: RUN_TIME
-        value: "${OPEN_AI_KEY}"
-      - key: EMBEDDINGS_BEARER_TOKEN
-        scope: RUN_TIME
-        value: "${EMBEDDINGS_BEARER_TOKEN}"
       - key: EMBEDDINGS_URL
         scope: RUN_TIME
         value: "${APP_URL}/memory"
@@ -51,11 +52,11 @@ services:
     github:
       branch: main
       deploy_on_push: true
-      repo: squarecat/documentation-buddy
+      repo: squarecat/doc-buddy
     http_port: 8080
     instance_count: 1
     instance_size_slug: basic-xs
-    name: documentation-buddy-chat
+    name: chat
     run_command: node index.js
     source_dir: /
   - dockerfile_path: Dockerfile
@@ -85,5 +86,5 @@ services:
     http_port: 8080
     instance_count: 1
     instance_size_slug: basic-xxs
-    name: documentation-buddy-memory
+    name: memory
     source_dir: /
