@@ -1,7 +1,5 @@
 # Documentation Buddy
 
-## Getting Started
-
 Documentation Buddy is a Telegram chatbot powered by GPT and OpenAI. You can upload PDF and other documents, the bot will learn from them and you can ask it questions.
 
 Useful in a variety of situations where you have too much information to learn and need a quick reference guide!
@@ -17,6 +15,16 @@ Useful in a variety of situations where you have too much information to learn a
 
 - A DigitalOcean account if you want to deploy directly to DigitalOceans App Platform. If you don't already have one, you can sign up at https://cloud.digitalocean.com/registrations/new.
 
+## Getting Started
+
+1. Create a new Telegram bot with BotFather. Step-by-step guide [here](https://core.telegram.org/bots/features#creating-a-new-bot). 
+2. You will get a token from BotFather that looks like this: `4839574812:AAFD39kkdpWt3ywyRZergyOLMaJhac60qc`. You will use this for the `TELEGRAM_TOKEN` env variable later.
+3. Create a [Pinecone](https://www.pinecone.io/) account. This is used to store the embeddings data of the uploaded documents.
+4. Get a Pinecone API key from the settings pages. You will use this for the `PINECONE_API_KEY` env variable. The index will be created automatically later so you don't need to do anything else.
+5. Create a Digital Ocean Space (or other s3 like storage). This is used to store the documents uploaded in case they need to be reindexed later.
+6. Click the button below to deploy directly as a Digital Ocean App. This is a simple step-by-step process that takes <5 minutes.
+7. On the Environemnt Variables page of the Digital Ocean App creation process, replace the default values with the values you've generated.
+
 ## Deploying the App
 
 Click this button to deploy the app to the DigitalOcean App Platform. If you are not logged in, you will be prompted to log in with your DigitalOcean account.
@@ -30,17 +38,17 @@ You'll need to add these to the DigitalOcean app env variables.
 | Key | Default | Description   |
 | ----|-------- | ------------- |
 | OPEN_AI_MODEL  | "gpt-3.5-turbo" | The AI model that the assistant will use to reply. GPT-3.5-Turbo will be good enough for most cases |
-| OPEN_AI_KEY  | | |
+| OPEN_AI_KEY  | | Your OpenAI API Key |
 | TELEGRAM_TOKEN | | The token you get from BotFather | 
-| EMBEDDINGS_BEARER_TOKEN  |   | |
-| STORAGE_NAME  | | |
-| STORAGE_URL  |  | |
-| STORAGE_KEY |  | |
-| STORAGE_SECRET  | | |
+| EMBEDDINGS_BEARER_TOKEN  | | Set this to a randomly generated string |
+| STORAGE_NAME  | | The name of the s3 storage bucket eg. "doc-buddy" |
+| STORAGE_URL  |  | The url of the s3 bucket eg. https://sfo3.digitaloceanspaces.com/ |
+| STORAGE_KEY |  | The API key of the s3 bucket |
+| STORAGE_SECRET  | | The Secret key of the s3 bucket |
 | DATASTORE | pinecone  | |
-| PINECONE_API_KEY  |  | |
-| PINECONE_ENVIRONMENT | | |
-| PINECONE_INDEX | | |
+| PINECONE_API_KEY  |  | Your Pinecone API key |
+| PINECONE_ENVIRONMENT | | The envrinment of your Pinecone index eg. "northamerica-northeast1-gcp" |
+| PINECONE_INDEX | | The name of your Pinecone index eg. "doc-buddy-memory" |
 
 ## Usage - uploading documentation
 
