@@ -3,12 +3,12 @@ spec:
   ingress:
     rules:
       - component:
-          name: documentation-buddy-chat
+          name: chat
         match:
           path:
             prefix: /
       - component:
-          name: documentation-buddy-memory
+          name: memory
         match:
           path:
             prefix: /memory
@@ -52,7 +52,7 @@ spec:
       http_port: 8080
       instance_count: 1
       instance_size_slug: basic-xs
-      name: documentation-buddy-chat
+      name: chat
       run_command: node index.js
       source_dir: /
     - dockerfile_path: Dockerfile
@@ -82,5 +82,5 @@ spec:
       http_port: 8080
       instance_count: 1
       instance_size_slug: basic-xxs
-      name: documentation-buddy-memory
+      name: memory
       source_dir: /
