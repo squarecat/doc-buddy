@@ -2,7 +2,7 @@
 
 ## Getting Started
 
-Documentation Buddy is a chatbot powered by GPT-4 and OpenAI. You can upload PDF and other documents, the bot will learn from them and you can ask it questions.
+Documentation Buddy is a Telegram chatbot powered by GPT and OpenAI. You can upload PDF and other documents, the bot will learn from them and you can ask it questions.
 
 Useful in a variety of situations where you have too much information to learn and need a quick reference guide!
 
@@ -32,3 +32,9 @@ Simply upload a doc to the Telegram chat and doc buddy will learn the contents o
 ## Customizing the assistant
 
 You can edit the prompt that is given to the assistant in the `prompt.md` file.
+
+## Sponsor
+
+Sponsored by [Ellie - Your AI Email assistant](https://tryellie.com). Ellie learns from your writing style and crafts replies as if they were written by you! 
+
+[![Ellie example](./imgs/ellie.png)](https://tryellie.com?ref=doc-buddy)
