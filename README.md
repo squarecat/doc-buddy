@@ -2,7 +2,9 @@
 
 ## Getting Started
 
-Documentation Buddy is a chatbot powered by GPT-4 and OpenAI.
+Documentation Buddy is a chatbot powered by GPT-4 and OpenAI. You can upload PDF and other documents, the bot will learn from them and you can ask it questions.
+
+Useful in a variety of situations where you have too much information to learn and need a quick reference guide!
 
 ### Requirements
 
@@ -25,7 +27,7 @@ Click this button to deploy the app to the DigitalOcean App Platform. If you are
 
 Simply upload a doc to the Telegram chat and doc buddy will learn the contents of that document.
 
-[![Example file upload](./imgs/upload-file.png)]
+![Example file upload](./imgs/upload-file.png)
 
 ## Customizing the assistant
 
