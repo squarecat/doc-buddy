@@ -1,5 +1,17 @@
 spec:
   name: documentation-buddy
+  ingress:
+    rules:
+      - component:
+          name: documentation-buddy-chat
+        match:
+          path:
+            prefix: /
+      - component:
+          name: documentation-buddy-memory
+        match:
+          path:
+            prefix: /memory
   services:
     - environment_slug: node-js
       envs:
