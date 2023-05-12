@@ -25,7 +25,7 @@ const onMessage = async (ctx) => {
     const fileId = document.file_id;
     const fileUrl = await telegram.getFileLink(fileId);
     console.log(`[bot]: Received document: ${document.file_name} (${fileUrl})`);
-    ctx.reply(`Wait a sec while I take a look at that...`);
+    ctx.reply(`Wait a moment while I take a look at that...`);
     const fileResponse = await axios({
       url: fileUrl,
       method: "GET",

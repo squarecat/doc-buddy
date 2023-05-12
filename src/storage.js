@@ -1,11 +1,4 @@
-import {
-  DeleteObjectCommand,
-  GetObjectCommand,
-  PutObjectCommand,
-  S3,
-} from "@aws-sdk/client-s3";
-
-import fs from "fs";
+import { DeleteObjectCommand, PutObjectCommand, S3 } from "@aws-sdk/client-s3";
 
 const { STORAGE_NAME, STORAGE_URL, STORAGE_KEY, STORAGE_SECRET } = process.env;
 
@@ -49,11 +42,6 @@ export async function saveMemoryIndex(memoryJson) {
 }
 
 async function getFileFromStorage({ path }) {
-  const params = {
-    Bucket: STORAGE_NAME,
-    Key: path,
-  };
-  const command = new GetObjectCommand(params);
   try {
     const output = await s3Client.getObject({
       Bucket: STORAGE_NAME,

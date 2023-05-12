@@ -1,18 +1,16 @@
 import EventEmitter from "events";
 import axios from "axios";
 import { encode } from "punycode";
+import fs from "fs";
 import { getEmbeddings } from "./embeddings.js";
+import path from "path";
 
-const prompt = [
-  `You are a member of the crew on a small sailboat (a Beneteau Oceanis 361) named Nayru.`,
-  `- Your role is record keeper, and you need to know everything about the boat's workings.`,
-  `- You only have the capability to read the manuals, not do any other tasks.`,
-  `- Answer questions politely, in the manner of an old-sea-dog speaking to the captain.`,
-  `- Refer to the captain as "Captain".`,
-  `- Always translate measurements to metric.`,
-  `- Nayru's engine is a Yanmar 3YM30E`,
-  `- Nayru has a B3 30 water boiler`,
-];
+const model = process.env.OPEN_AI_MODEL || "gpt-3.5-turbo";
+
+const prompt = readMarkdownFile(
+  path.join(path.resolve(new URL("../", import.meta.url).pathname), "prompt.md")
+);
+
 let history = [];
 
 export async function getChatResponse({ message, currentMemory }) {
@@ -30,7 +28,7 @@ export async function getChatResponse({ message, currentMemory }) {
     {
       role: "system",
       content: [
-        ...prompt,
+        prompt,
         `You have access to the following files: \n${currentMemory
           .map((cm, i) => `${i + 1}. ${cm.name} - ${cm.description}`)
           .join("\n")}`,
@@ -38,12 +36,12 @@ export async function getChatResponse({ message, currentMemory }) {
     },
   ];
 
-  let content = [`Here is the question from the Captain: ${message}`];
+  let content = [`Here is the question: ${message}`];
 
   if (embeddings.length) {
     content = [
       ...content,
-      `Here is some background information related to the next question from Nayru's manuals. If it doesn't seem relevant then ignore it:`,
+      `Here is some background information related to the next question from the manuals. If it doesn't seem relevant then ignore it:`,
       ...embeddings.reduce(
         (out, e) => [...out, `File name: ${e.sourceUrl}`, `Content: ${e.text}`],
         []
@@ -66,7 +64,7 @@ export async function getChatResponse({ message, currentMemory }) {
     `[bot]: using ${usableHistory.tokens} tokens of previous history`
   );
 
-  content = [...content, `\n\nWhat answer would you give the Captain?`];
+  content = [...content, `\n\nWhat answer would you give?`];
   messages = [
     ...messages,
     ...usableHistory.items,
@@ -76,10 +74,8 @@ export async function getChatResponse({ message, currentMemory }) {
     },
   ];
 
-  console.log(JSON.stringify(messages, null, 2));
-
   let data = {
-    model: "gpt-3.5-turbo",
+    model,
     messages,
     max_tokens: 500,
     temperature: 0.7,
@@ -152,4 +148,18 @@ export async function getChatResponse({ message, currentMemory }) {
     res.emit("error", new Error("Failed to get response from OpenAI"));
   }
   return res;
+}
+
+function readMarkdownFile(filePath) {
+  // Read the file synchronously (you can use asynchronous methods if needed)
+  const fileContent = fs.readFileSync(filePath, "utf-8").toString();
+
+  // Remove comments and empty lines
+  const filteredContent = fileContent
+    .replace(/<!--[\s\S]*?-->/g, "") // Removes HTML comments
+    .replace(/\/\/.*/g, "") // Removes single-line comments
+    .replace(/\/\*[\s\S]*?\*\//g, "") // Removes multi-line comments
+    .replace(/^\s*[\r\n]/gm, ""); // Removes empty lines
+
+  return filteredContent;
 }

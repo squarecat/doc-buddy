@@ -1,0 +1,89 @@
+alerts:
+  - rule: DEPLOYMENT_FAILED
+  - rule: DOMAIN_FAILED
+ingress:
+  rules:
+    - component:
+        name: documentation-buddy-chat
+      match:
+        path:
+          prefix: /
+    - component:
+        name: documentation-buddy-memory
+      match:
+        path:
+          prefix: /memory
+name: documentation-buddy-chat
+region: sfo
+services:
+  - environment_slug: node-js
+    envs:
+      - key: OPEN_AI_MODEL
+        scope: RUN_TIME
+        value: "gpt-3.5-turbo"
+      - key: TELEGRAM_TOKEN
+        scope: RUN_TIME
+        value: "${TELEGRAM_TOKEN}"
+      - key: OPEN_AI_KEY
+        scope: RUN_TIME
+        value: "${OPEN_AI_KEY}"
+      - key: EMBEDDINGS_BEARER_TOKEN
+        scope: RUN_TIME
+        value: "${EMBEDDINGS_BEARER_TOKEN}"
+      - key: EMBEDDINGS_URL
+        scope: RUN_TIME
+        value: "${APP_URL}/memory"
+      - key: SERVER_PORT
+        scope: RUN_TIME
+        value: "8080"
+      - key: STORAGE_NAME
+        scope: RUN_TIME
+        value: "${STORAGE_NAME}"
+      - key: STORAGE_URL
+        scope: RUN_TIME
+        value: "${STORAGE_URL}"
+      - key: STORAGE_KEY
+        scope: RUN_TIME
+        value: "${STORAGE_KEY}"
+      - key: STORAGE_SECRET
+        scope: RUN_TIME
+        value: "${STORAGE_SECRET}"
+    github:
+      branch: main
+      deploy_on_push: true
+      repo: squarecat/documentation-buddy
+    http_port: 8080
+    instance_count: 1
+    instance_size_slug: basic-xs
+    name: documentation-buddy-chat
+    run_command: node index.js
+    source_dir: /
+  - dockerfile_path: Dockerfile
+    envs:
+      - key: BEARER_TOKEN
+        scope: RUN_TIME
+        value: "${BEARER_TOKEN}"
+      - key: OPENAI_API_KEY
+        scope: RUN_TIME
+        value: "${OPEN_AI_KEY}"
+      - key: DATASTORE
+        scope: RUN_TIME
+        value: pinecone
+      - key: PINECONE_API_KEY
+        scope: RUN_TIME
+        value: "${PINECONE_API_KEY}"
+      - key: PINECONE_ENVIRONMENT
+        scope: RUN_TIME
+        value: "${PINECONE_ENVIRONMENT}"
+      - key: PINECONE_INDEX
+        scope: RUN_TIME
+        value: "${PINECONE_INDEX}"
+    github:
+      branch: main
+      deploy_on_push: true
+      repo: squarecat/chatgpt-retrieval-plugin
+    http_port: 8080
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    name: documentation-buddy-memory
+    source_dir: /
