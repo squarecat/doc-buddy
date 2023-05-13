@@ -3,10 +3,10 @@ spec:
   envs:
     - key: OPEN_AI_KEY
       scope: RUN_TIME
-      value: "${OPEN_AI_KEY}"
+      value: "OPEN_AI_KEY"
     - key: BEARER_TOKEN
       scope: RUN_TIME
-      value: "${BEARER_TOKEN}"
+      value: "BEARER_TOKEN"
   ingress:
     rules:
       - component:
@@ -27,7 +27,7 @@ spec:
           value: "gpt-3.5-turbo"
         - key: TELEGRAM_TOKEN
           scope: RUN_TIME
-          value: "${TELEGRAM_TOKEN}"
+          value: "TELEGRAM_TOKEN"
         - key: EMBEDDINGS_URL
           scope: RUN_TIME
           value: "${APP_URL}/memory"
@@ -36,16 +36,16 @@ spec:
           value: "8080"
         - key: STORAGE_NAME
           scope: RUN_TIME
-          value: "${STORAGE_NAME}"
+          value: "STORAGE_NAME"
         - key: STORAGE_URL
           scope: RUN_TIME
-          value: "${STORAGE_URL}"
+          value: "STORAGE_URL"
         - key: STORAGE_KEY
           scope: RUN_TIME
-          value: "${STORAGE_KEY}"
+          value: "STORAGE_KEY"
         - key: STORAGE_SECRET
           scope: RUN_TIME
-          value: "${STORAGE_SECRET}"
+          value: "STORAGE_SECRET"
       github:
         branch: main
         deploy_on_push: true
@@ -58,24 +58,18 @@ spec:
       source_dir: /
     - dockerfile_path: Dockerfile
       envs:
-        - key: BEARER_TOKEN
-          scope: RUN_TIME
-          value: "${BEARER_TOKEN}"
-        - key: OPENAI_API_KEY
-          scope: RUN_TIME
-          value: "${OPEN_AI_KEY}"
         - key: DATASTORE
           scope: RUN_TIME
           value: pinecone
         - key: PINECONE_API_KEY
           scope: RUN_TIME
-          value: "${PINECONE_API_KEY}"
+          value: "PINECONE_API_KEY"
         - key: PINECONE_ENVIRONMENT
           scope: RUN_TIME
-          value: "${PINECONE_ENVIRONMENT}"
+          value: "northamerica-northeast1-gcp"
         - key: PINECONE_INDEX
           scope: RUN_TIME
-          value: "${PINECONE_INDEX}"
+          value: "doc-buddy-memory"
       github:
         branch: main
         deploy_on_push: true
