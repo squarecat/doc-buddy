@@ -17,7 +17,7 @@ RUN yarn install
 
 # Copy over files
 # Using separate step in order to allow caching, if the code changes but dependencies don't
-COPY --chown=appuser ["index.js", "./"]
+COPY --chown=appuser ["index.js", "prompt.md", "./"]
 COPY --chown=appuser ["src", "./src"]
 
 # Default run command
