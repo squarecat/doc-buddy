@@ -136,6 +136,7 @@ export async function getChatResponse({ message, currentMemory }) {
     stream.once("end", () => {
       console.log(`Generated chat reply`);
       res.emit("data", out);
+      res.emit("done");
       history.push(
         { role: "user", content: content.join("\n") },
         { role: "assistant", content: out }
