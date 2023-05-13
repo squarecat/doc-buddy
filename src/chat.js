@@ -47,6 +47,11 @@ export async function getChatResponse({ message, currentMemory }) {
         []
       ),
     ];
+  } else {
+    content = [
+      ...content,
+      `Information regarding the question was not found in any of the manuals. You can still try to answer the question, but say that your answer is not based on the manuals.`,
+    ];
   }
 
   const usableHistory = history.reverse().reduce(
