@@ -73,7 +73,7 @@ spec:
       github:
         branch: main
         deploy_on_push: true
-        repo: squarecat/chatgpt-retrieval-plugin
+        repo: openai/chatgpt-retrieval-plugin
       http_port: 8080
       instance_count: 1
       instance_size_slug: basic-xxs
