@@ -46,9 +46,6 @@ spec:
         - key: STORAGE_SECRET
           scope: RUN_TIME
           value: "STORAGE_SECRET"
-        - key: EMBEDDINGS_BEARER_TOKEN
-          scope: RUN_TIME
-          value: "${BEARER_TOKEN}"
       github:
         branch: main
         repo: squarecat/doc-buddy
