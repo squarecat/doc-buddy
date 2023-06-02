@@ -51,7 +51,6 @@ spec:
           value: "${BEARER_TOKEN}"
       github:
         branch: main
-        deploy_on_push: true
         repo: squarecat/doc-buddy
       http_port: 8080
       instance_count: 1
@@ -75,7 +74,6 @@ spec:
           value: "doc-buddy-memory"
       github:
         branch: main
-        deploy_on_push: true
         repo: openai/chatgpt-retrieval-plugin
       http_port: 8080
       instance_count: 1

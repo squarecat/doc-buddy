@@ -45,7 +45,7 @@ You'll need to add these to the DigitalOcean app env variables.
 | OPEN_AI_MODEL           | "gpt-3.5-turbo" | The AI model that the assistant will use to reply. GPT-3.5-Turbo will be good enough for most cases |
 | OPEN_AI_KEY             |                 | Your OpenAI API Key                                                                                 |
 | TELEGRAM_TOKEN          |                 | The token you get from BotFather                                                                    |
-| EMBEDDINGS_BEARER_TOKEN |                 | Set this to a randomly generated string                                                             |
+| BEARER_TOKEN |                 | Set this to a randomly generated string                                                             |
 | STORAGE_NAME            |                 | The name of the s3 storage bucket eg. "doc-buddy"                                                   |
 | STORAGE_URL             |                 | The url of the s3 bucket eg. https://sfo3.digitaloceanspaces.com/                                   |
 | STORAGE_KEY             |                 | The API key of the s3 bucket                                                                        |
