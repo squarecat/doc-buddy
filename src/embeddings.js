@@ -46,7 +46,7 @@ export async function saveEmbeddingsFile({ file }) {
 
 export async function getEmbeddings({ text }) {
   const embeddingsUrl = process.env.EMBEDDINGS_URL;
-  const embeddingsKey = process.env.EMBEDDINGS_BEARER_TOKEN;
+  const embeddingsKey = process.env.BEARER_TOKEN;
   try {
     const response = await axios.post(
       `${embeddingsUrl}/query`,
