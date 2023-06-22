@@ -30,11 +30,17 @@ Useful in a variety of situations where you have too much information to learn a
 
 ## Deploying the App
 
+### Digital Ocean
 Click this button to deploy the app to the DigitalOcean App Platform. If you are not logged in, you will be prompted to log in with your DigitalOcean account.
 
 [![Deploy to DigitalOcean](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/squarecat/doc-buddy/tree/main&refcode=1f67a87765d4)
 
 When you get to the "Review" section of the deploy, make sure to set the plan to `Basic` as it will default to `Pro`. The chat component should run fine on a $5/mo sized instance, and the memory component will probably be fine at $5 also, but much faster at $10/mo.
+
+### Docker
+1. `docker build -t doc-buddy`
+2. Fill in container.env file with your keys from the Getting Started section
+3. `docker run -p 3000:80 -d doc-buddy --env-file container.env`
 
 ## Environment Variables
 
