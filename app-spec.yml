@@ -15,9 +15,6 @@ ingress:
         path:
           prefix: /memory
 envs:
-  - key: OPEN_AI_KEY
-    scope: RUN_TIME
-    value: "${OPEN_AI_KEY}"
   - key: BEARER_TOKEN
     scope: RUN_TIME
     value: "${BEARER_TOKEN}"
@@ -25,6 +22,9 @@ region: sfo
 services:
   - environment_slug: node-js
     envs:
+      - key: OPEN_AI_KEY
+        scope: RUN_TIME
+        value: "${OPEN_AI_KEY}"
       - key: OPEN_AI_MODEL
         scope: RUN_TIME
         value: "gpt-3.5-turbo"
@@ -61,9 +61,6 @@ services:
     source_dir: /
   - dockerfile_path: Dockerfile
     envs:
-      - key: BEARER_TOKEN
-        scope: RUN_TIME
-        value: "${BEARER_TOKEN}"
       - key: OPENAI_API_KEY
         scope: RUN_TIME
         value: "${OPEN_AI_KEY}"

@@ -1,9 +1,6 @@
 spec:
   name: documentation-buddy
   envs:
-    - key: OPEN_AI_KEY
-      scope: RUN_TIME
-      value: "OPEN_AI_KEY"
     - key: BEARER_TOKEN
       scope: RUN_TIME
       value: "BEARER_TOKEN"
@@ -22,6 +19,9 @@ spec:
   services:
     - environment_slug: node-js
       envs:
+        - key: OPEN_AI_KEY
+          scope: RUN_TIME
+          value: "OPEN_AI_KEY"
         - key: OPEN_AI_MODEL
           scope: RUN_TIME
           value: "gpt-3.5-turbo"
@@ -57,6 +57,9 @@ spec:
       source_dir: /
     - dockerfile_path: Dockerfile
       envs:
+        - key: OPENAI_API_KEY
+          scope: RUN_TIME
+          value: "${OPEN_AI_KEY}"
         - key: DATASTORE
           scope: RUN_TIME
           value: pinecone
