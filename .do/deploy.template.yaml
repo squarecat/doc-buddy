@@ -59,7 +59,7 @@ spec:
       envs:
         - key: OPENAI_API_KEY
           scope: RUN_TIME
-          value: "${OPEN_AI_KEY}"
+          value: "${OPENAI_API_KEY}"
         - key: DATASTORE
           scope: RUN_TIME
           value: pinecone
