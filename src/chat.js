@@ -32,20 +32,22 @@ export async function getChatResponse({ message, currentMemory }) {
   console.log(
     `[bot]: using ${usableHistory.tokens} tokens of previous history`
   );
-  console.log(`A question was posed for the ${topic}`);
+  console.log(
+    `A question was posed for the ${topic === "other" ? "cabin boy" : topic}`
+  );
   switch (topic) {
     case "mechanic": {
-      return await getMechanicsAnswer({
+      return getMechanicsAnswer({
         message,
         currentMemory,
         usableHistory,
       });
     }
     case "quartermaster": {
-      return await getQuartermasterAnswer({ message });
+      return getQuartermasterAnswer({ message });
     }
     default: {
-      return await getGenericAnswer({ message });
+      return getGenericAnswer({ message });
     }
   }
 }
