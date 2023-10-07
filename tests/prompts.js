@@ -17,30 +17,35 @@ async function go() {
 }
 
 export async function start() {
-  let pantry = await savePantry({
-    beans: 2,
-    carrots: 4,
-  });
-  console.log("Start:");
-  console.log(JSON.stringify(pantry, null, 2));
-  const out = await getChatResponse({
-    message: "Add four bags of cofeee to the pantry and 1 carrot.",
-  });
-  out.on("data", (data) => console.log(data));
+  // let pantry = await savePantry({
+  //   beans: 2,
+  //   carrots: 4,
+  // });
+  // console.log("Start:");
+  // console.log(JSON.stringify(pantry, null, 2));
+  // const out = await getChatResponse({
+  //   message: "Add four bags of cofeee to the pantry and 1 carrot.",
+  // });
+  // out.on("data", (data) => console.log(data));
 
-  const out2 = await getChatResponse({
-    message: "How many bags of coffee are there?",
-  });
-  out2.on("data", (data) => console.log(data));
+  // const out2 = await getChatResponse({
+  //   message: "How many bags of coffee are there?",
+  // });
+  // out2.on("data", (data) => console.log(data));
 
-  const out3 = await getChatResponse({
-    message: "Do we have enough beans?",
-  });
-  out3.on("data", (data) => console.log(data));
+  // const out3 = await getChatResponse({
+  //   message: "Do we have enough beans?",
+  // });
+  // out3.on("data", (data) => console.log(data));
 
-  const out4 = await getChatResponse({
-    message: "What's currently in the stores?",
+  // const out4 = await getChatResponse({
+  //   message: "What's currently in the stores?",
+  // });
+  // out4.on("data", (data) => console.log(data));
+
+  const out5 = await getChatResponse({
+    message: "What breed of dolphins are there in the med?",
   });
-  out4.on("data", (data) => console.log(data));
+  out5.on("data", (data) => console.log(data));
   // console.log(out);
 }
