@@ -72,7 +72,7 @@ async function getMechanicsAnswer({ message, currentMemory, usableHistory }) {
     },
   ];
 
-  let content = [`Here is the question: ${message}`];
+  let content = [`You are the mechanic. Here is the question: ${message}`];
 
   if (embeddings.length) {
     content = [
@@ -293,7 +293,7 @@ async function getQuartermasterAnswer({ message }) {
       },
       {
         role: "user",
-        content: `You are being asked a question about the ships stores. If you need to list multiple items, do so as an inventory for easy reading.
+        content: `You are the quartermaster. You are being asked a question about the ships stores. If you need to list multiple items, do so as an inventory for easy reading.
 Here is the current state of the ships pantry:
 
 ${JSON.stringify(pantry, null, 2)}
@@ -315,4 +315,29 @@ ${message}`,
   return await streamResponse(data2);
 }
 
-function getGenericAnswer() {}
+async function getGenericAnswer({ message }) {
+  let data2 = {
+    model,
+    messages: [
+      {
+        role: "system",
+        content: prompt,
+      },
+      {
+        role: "user",
+        content: `You are the cabin boy. You are being asked the question:
+
+${message}`,
+      },
+    ],
+    max_tokens: 50,
+    temperature: 0.1,
+    top_p: 1,
+    frequency_penalty: 0,
+    presence_penalty: 0,
+    stream: true,
+    userMessage: message,
+  };
+
+  return await streamResponse(data2);
+}
