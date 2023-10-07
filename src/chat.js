@@ -305,7 +305,7 @@ Here is the question:
 ${message}`,
       },
     ],
-    max_tokens: 50,
+    max_tokens: 2000,
     temperature: 0.1,
     top_p: 1,
     frequency_penalty: 0,
