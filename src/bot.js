@@ -12,6 +12,7 @@ import { saveEmbeddingsFile } from "./embeddings.js";
 
 let currentMemory;
 let currentFile = null;
+
 dotenv.config({});
 
 export const bot = new Telegraf(process.env.TELEGRAM_TOKEN);

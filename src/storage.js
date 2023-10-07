@@ -1,13 +1,11 @@
 import { DeleteObjectCommand, PutObjectCommand, S3 } from "@aws-sdk/client-s3";
 
-const { STORAGE_NAME, STORAGE_URL, STORAGE_KEY, STORAGE_SECRET } = process.env;
-
 const s3Client = new S3({
-  endpoint: STORAGE_URL,
+  endpoint: process.env.STORAGE_URL,
   region: "us-east-1",
   credentials: {
-    accessKeyId: STORAGE_KEY,
-    secretAccessKey: STORAGE_SECRET,
+    accessKeyId: process.env.STORAGE_KEY,
+    secretAccessKey: process.env.STORAGE_SECRET,
   },
 });
 
@@ -20,7 +18,7 @@ export async function getMemoryIndex() {
 export async function saveMemoryIndex(memoryJson) {
   const rawFile = Buffer.from(JSON.stringify(memoryJson), "binary");
   const params = {
-    Bucket: STORAGE_NAME,
+    Bucket: process.env.STORAGE_NAME,
     Key: "memory.json",
     Body: rawFile,
     ContentType: "application/json",
@@ -32,7 +30,7 @@ export async function saveMemoryIndex(memoryJson) {
     console.log("[file]: saved memory");
 
     return {
-      bucket: STORAGE_NAME,
+      bucket: process.env.STORAGE_NAME,
       key: "memory.json",
     };
   } catch (err) {
@@ -41,10 +39,10 @@ export async function saveMemoryIndex(memoryJson) {
   }
 }
 
-async function getFileFromStorage({ path }) {
+export async function getFileFromStorage({ path }) {
   try {
     const output = await s3Client.getObject({
-      Bucket: STORAGE_NAME,
+      Bucket: process.env.STORAGE_NAME,
       Key: path,
     });
     console.log("[file]: got file from bucket", path);
@@ -57,13 +55,37 @@ async function getFileFromStorage({ path }) {
   }
 }
 
+export async function saveJSONFileToStorage({ path, json }) {
+  const rawFile = Buffer.from(JSON.stringify(json), "binary");
+  const params = {
+    Bucket: process.env.STORAGE_NAME,
+    Key: path,
+    Body: rawFile,
+    ContentType: "application/json",
+    ACL: "public-read",
+  };
+  const command = new PutObjectCommand(params);
+  try {
+    await s3Client.send(command);
+    console.log("[file]: saved memory");
+
+    return {
+      bucket: process.env.STORAGE_NAME,
+      key: path,
+    };
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+}
+
 export async function uploadFileToStorage({ file }) {
   const { raw, name } = file;
 
   const key = `memory/${name}`;
 
   const params = {
-    Bucket: STORAGE_NAME,
+    Bucket: process.env.STORAGE_NAME,
     Key: key,
     Body: raw,
     ACL: "public-read",
@@ -74,7 +96,7 @@ export async function uploadFileToStorage({ file }) {
     console.log("[file]: uploaded embeddings file to bucket", key);
 
     return {
-      bucket: STORAGE_NAME,
+      bucket: process.env.STORAGE_NAME,
       key,
     };
   } catch (err) {

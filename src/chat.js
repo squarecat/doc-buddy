@@ -1,3 +1,5 @@
+import { change, getPantry } from "./pantry.js";
+
 import EventEmitter from "events";
 import axios from "axios";
 import { encode } from "punycode";
@@ -14,8 +16,43 @@ const prompt = readMarkdownFile(
 let history = [];
 
 export async function getChatResponse({ message, currentMemory }) {
-  const res = new EventEmitter();
+  const topic = await getTopic(message);
+
+  const usableHistory = history.reverse().reduce(
+    (out, h, i) => {
+      const { tokens, items } = out;
+      const itemTokens = encode(h.content).length;
+      if (tokens + itemTokens > 2000) {
+        return { tokens, items };
+      }
+      return { tokens: tokens + itemTokens, items: [h, ...items] };
+    },
+    { tokens: 0, items: [] }
+  );
+  console.log(
+    `[bot]: using ${usableHistory.tokens} tokens of previous history`
+  );
+  console.log(`A question was posed for the ${topic}`);
+  switch (topic) {
+    case "mechanic": {
+      return await getMechanicsAnswer({
+        message,
+        currentMemory,
+        usableHistory,
+      });
+    }
+    case "quartermaster": {
+      return await getQuartermasterAnswer({ message });
+    }
+    default: {
+      return await getGenericAnswer({ message });
+    }
+  }
+}
+
+async function getMechanicsAnswer({ message, currentMemory, usableHistory }) {
   let embeddings;
+
   try {
     embeddings = await getEmbeddings({ text: message });
   } catch (err) {
@@ -23,7 +60,6 @@ export async function getChatResponse({ message, currentMemory }) {
     res.emit("error", new Error("Failed to get embeddings"));
   }
 
-  const apiKey = process.env.OPEN_AI_KEY;
   let messages = [
     {
       role: "system",
@@ -54,21 +90,6 @@ export async function getChatResponse({ message, currentMemory }) {
     ];
   }
 
-  const usableHistory = history.reverse().reduce(
-    (out, h, i) => {
-      const { tokens, items } = out;
-      const itemTokens = encode(h.content).length;
-      if (tokens + itemTokens > 2000) {
-        return { tokens, items };
-      }
-      return { tokens: tokens + itemTokens, items: [h, ...items] };
-    },
-    { tokens: 0, items: [] }
-  );
-  console.log(
-    `[bot]: using ${usableHistory.tokens} tokens of previous history`
-  );
-
   content = [...content, `\n\nWhat answer would you give?`];
   messages = [
     ...messages,
@@ -80,6 +101,7 @@ export async function getChatResponse({ message, currentMemory }) {
   ];
 
   let data = {
+    userMessage,
     model,
     messages,
     max_tokens: 500,
@@ -89,6 +111,14 @@ export async function getChatResponse({ message, currentMemory }) {
     presence_penalty: 0,
     stream: true,
   };
+
+  return streamResponse(data);
+}
+
+async function streamResponse({ userMessage, ...data }) {
+  const res = new EventEmitter();
+  const apiKey = process.env.OPEN_AI_KEY;
+
   try {
     const response = await axios.post(
       "https://api.openai.com/v1/chat/completions",
@@ -102,7 +132,6 @@ export async function getChatResponse({ message, currentMemory }) {
       }
     );
     const stream = response.data;
-    let outputTokenLength = 0;
     let out = "";
     stream.on("data", (chunk) => {
       try {
@@ -120,7 +149,6 @@ export async function getChatResponse({ message, currentMemory }) {
             const data = JSON.parse(line);
             let content = data?.choices[0]?.delta?.content;
             if (content) {
-              console.log(content);
               out += content;
             }
           }
@@ -138,7 +166,7 @@ export async function getChatResponse({ message, currentMemory }) {
       res.emit("data", out);
       res.emit("done");
       history.push(
-        { role: "user", content: content.join("\n") },
+        { role: "user", content: userMessage },
         { role: "assistant", content: out }
       );
       history = history.slice(-20);
@@ -169,3 +197,123 @@ function readMarkdownFile(filePath) {
 
   return filteredContent;
 }
+
+export async function getTopic(message) {
+  let data = {
+    model,
+    messages: [
+      {
+        role: "system",
+        content: prompt,
+      },
+      {
+        role: "user",
+        content: `Here is a question posed to you from the first-mate or Captain, is this question for the "quartermaster" regarding boat stores, the "mechanic" regarding workings of the boat, or something else? Respond with a single word, either "quartermaster", "mechanic", or "other".
+          
+          ${message}
+          `,
+      },
+    ],
+    max_tokens: 50,
+    temperature: 0.1,
+    top_p: 1,
+    frequency_penalty: 0,
+    presence_penalty: 0,
+  };
+  return getResponse(data);
+}
+
+async function getResponse(data) {
+  try {
+    const apiKey = process.env.OPEN_AI_KEY;
+    const response = await axios.post(
+      "https://api.openai.com/v1/chat/completions",
+      data,
+      {
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+      }
+    );
+
+    return response?.data?.choices[0]?.message?.content;
+  } catch (err) {
+    console.error(err?.message);
+  }
+}
+
+async function getQuartermasterAnswer({ message }) {
+  let pantry = await getPantry();
+  const items = Object.keys(pantry).join(", ");
+  let data = {
+    model,
+    messages: [
+      {
+        role: "system",
+        content:
+          "You are a pantry robot that controls the stock in the pantry, you read natural language and reply with the changes required in JSON format. These changes will be read by another robot. You only reply with changes, if there are no changes, return an empty array.",
+      },
+      {
+        role: "user",
+        content:
+          "Items: beans, carrots, coffee, peanuts. Add two cans of beans to the pantry and remove 1 carrot.",
+      },
+      {
+        role: "assistant",
+        content: `[{ "item": "beans", "delta": 2 }, { "item": "carrots", "delta": -1 }]`,
+      },
+      {
+        role: "user",
+        content: "What's in the pantry?",
+      },
+      {
+        role: "assistant",
+        content: `[]`,
+      },
+      { role: "user", content: `Items: ${items}. ${message}` },
+    ],
+    max_tokens: 50,
+    temperature: 0.1,
+    top_p: 1,
+    frequency_penalty: 0,
+    presence_penalty: 0,
+  };
+
+  const changes = await getResponse(data);
+  console.log("Storing changes...");
+  console.log(changes);
+  await change(JSON.parse(changes));
+
+  let data2 = {
+    model,
+    messages: [
+      {
+        role: "system",
+        content: prompt,
+      },
+      {
+        role: "user",
+        content: `You are being asked a question about the ships stores. If you need to list multiple items, do so as an inventory for easy reading.
+Here is the current state of the ships pantry:
+
+${JSON.stringify(pantry, null, 2)}
+
+Here is the question:
+
+${message}`,
+      },
+    ],
+    max_tokens: 50,
+    temperature: 0.1,
+    top_p: 1,
+    frequency_penalty: 0,
+    presence_penalty: 0,
+    stream: true,
+    userMessage: message,
+  };
+
+  return await streamResponse(data2);
+}
+
+function getGenericAnswer() {}
