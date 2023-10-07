@@ -33,7 +33,9 @@ export async function getChatResponse({ message, currentMemory }) {
     `[bot]: using ${usableHistory.tokens} tokens of previous history`
   );
   console.log(
-    `A question was posed for the ${topic === "other" ? "cabin boy" : topic}`
+    `[bot]: A question was posed for the ${
+      topic === "other" ? "cabin boy" : topic
+    }`
   );
   switch (topic) {
     case "mechanic": {
@@ -282,8 +284,6 @@ async function getQuartermasterAnswer({ message }) {
   };
 
   const changes = await getResponse(data);
-  console.log("Storing changes...");
-  console.log(changes);
   await change(JSON.parse(changes));
 
   let data2 = {

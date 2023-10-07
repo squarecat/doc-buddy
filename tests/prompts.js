@@ -33,19 +33,19 @@ export async function start() {
   // });
   // out2.on("data", (data) => console.log(data));
 
-  // const out3 = await getChatResponse({
-  //   message: "Do we have enough beans?",
-  // });
-  // out3.on("data", (data) => console.log(data));
-
-  // const out4 = await getChatResponse({
-  //   message: "What's currently in the stores?",
-  // });
-  // out4.on("data", (data) => console.log(data));
-
-  const out5 = await getChatResponse({
-    message: "What breed of dolphins are there in the med?",
+  const out3 = await getChatResponse({
+    message: "Do we have enough beans?",
   });
-  out5.on("data", (data) => console.log(data));
+  out3.on("data", (data) => console.log(data));
+
+  const out4 = await getChatResponse({
+    message: "What's currently in the stores?",
+  });
+  out4.on("data", (data) => console.log(data));
+
+  // const out5 = await getChatResponse({
+  //   message: "What breed of dolphins are there in the med?",
+  // });
+  // out5.on("data", (data) => console.log(data));
   // console.log(out);
 }

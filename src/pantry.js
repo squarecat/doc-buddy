@@ -13,6 +13,9 @@ export async function savePantry(json) {
 
 export async function change(things) {
   const pantry = await getPantry();
+  if (things.length === 0) {
+    return pantry;
+  }
   let newPantry = pantry;
   for (let thing of things) {
     const { item, delta } = thing;
