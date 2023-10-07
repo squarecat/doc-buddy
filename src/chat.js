@@ -101,7 +101,7 @@ async function getMechanicsAnswer({ message, currentMemory, usableHistory }) {
   ];
 
   let data = {
-    userMessage,
+    userMessage: message,
     model,
     messages,
     max_tokens: 500,
