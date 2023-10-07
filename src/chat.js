@@ -247,7 +247,7 @@ async function getQuartermasterAnswer({ message }) {
   let pantry = await getPantry();
   const items = Object.keys(pantry).join(", ");
   let data = {
-    model,
+    model: "gpt-4",
     messages: [
       {
         role: "system",
@@ -256,8 +256,7 @@ async function getQuartermasterAnswer({ message }) {
       },
       {
         role: "user",
-        content:
-          "Items: beans, carrots, coffee, peanuts. Add two cans of beans to the pantry and remove 1 carrot.",
+        content: `Items: ${items}. Add two cans of beans to the pantry and remove 1 carrot.`,
       },
       {
         role: "assistant",
