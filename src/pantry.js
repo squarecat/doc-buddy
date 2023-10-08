@@ -3,7 +3,12 @@ import { getFileFromStorage, saveJSONFileToStorage } from "./storage.js";
 export async function getPantry() {
   const pJson = await getFileFromStorage({ path: "pantry.json" });
   const pantry = JSON.parse(pJson);
-  return pantry;
+  const sortedKeys = Object.keys(pantry).sort();
+  const sortedObj = {};
+  for (let key of sortedKeys) {
+    sortedObj[key] = obj[key];
+  }
+  return sortedObj;
 }
 
 export async function savePantry(json) {
