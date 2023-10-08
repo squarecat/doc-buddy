@@ -286,8 +286,16 @@ async function getQuartermasterAnswer({ message }) {
     presence_penalty: 0,
   };
 
-  const changes = await getResponse(data);
-  await change(JSON.parse(changes));
+  const changesText = await getResponse(data);
+  const changes = JSON.parse(changesText);
+  const newPantry = await change(changes);
+
+  let question = message;
+  if (changes.length) {
+    // change the question to just return the new state of the pantry
+    question =
+      "Tell me what is currently in the pantry, in a nice list. Put the things we have run out of at the bottom.";
+  }
 
   let data2 = {
     model,
@@ -301,7 +309,7 @@ async function getQuartermasterAnswer({ message }) {
         content: `You are the quartermaster. You are being asked a question about the ships stores. If you need to list multiple items, do so as an inventory for easy reading.
 Here is the current state of the ships pantry:
 
-${JSON.stringify(pantry, null, 2)}
+${JSON.stringify(newPantry, null, 2)}
 
 Here is the question:
 
