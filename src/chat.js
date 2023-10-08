@@ -15,6 +15,9 @@ const prompt = readMarkdownFile(
 
 let history = [];
 
+export function clearHistory() {
+  history = [];
+}
 export async function getChatResponse({ message, currentMemory }) {
   const topic = await getTopic(message);
 

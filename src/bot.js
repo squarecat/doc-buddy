@@ -1,3 +1,4 @@
+import { clearHistory, getChatResponse } from "./chat.js";
 import {
   getMemoryIndex,
   saveMemoryIndex,
@@ -7,7 +8,6 @@ import {
 import { Telegraf } from "telegraf";
 import axios from "axios";
 import dotenv from "dotenv";
-import { getChatResponse } from "./chat.js";
 import { saveEmbeddingsFile } from "./embeddings.js";
 
 let currentMemory;
@@ -19,6 +19,12 @@ export const bot = new Telegraf(process.env.TELEGRAM_TOKEN);
 const { telegram } = bot;
 
 bot.hears("hi", (ctx) => ctx.reply("Hey there"));
+bot.hears("forget", (ctx) => {
+  clearHistory();
+  ctx.reply(
+    "Okay Captain, lets stop the current conversation and talk about something else."
+  );
+});
 
 const onMessage = async (ctx) => {
   const document = ctx.message.document;
@@ -68,11 +74,6 @@ const onMessage = async (ctx) => {
 
 bot.on("text", onMessage);
 bot.on("message", onMessage);
-bot.command("forget", (ctx) => {
-  ctx.reply(
-    "Okay, lets stop the current conversation and talk about something else."
-  );
-});
 
 bot.catch((err, ctx) => {
   console.log(`Error: ${err.stack}`);
