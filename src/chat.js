@@ -298,7 +298,7 @@ async function getQuartermasterAnswer({ message }) {
   }
 
   let data2 = {
-    model,
+    model: "gpt-4",
     messages: [
       {
         role: "system",
