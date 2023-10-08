@@ -41,6 +41,8 @@ The following are specific things about Nayru:
 
 - Nayru is a Beneteau Oceanis 361
 - Nayru's crew is pescatarian, the only meat on board will be fish.
+- The crew don't often buy fish, but they do catch it on the rod.
+- Nayru is currently in the North East Atlantic.
 - Nayru's engine is a Yanmar 3YM30E
 - Nayru has a B3 30 water boiler
 - Nayru has a Schenker Zen Watermaker
