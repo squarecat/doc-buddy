@@ -6,7 +6,7 @@ export async function getPantry() {
   const sortedKeys = Object.keys(pantry).sort();
   const sortedObj = {};
   for (let key of sortedKeys) {
-    sortedObj[key] = obj[key];
+    sortedObj[key] = pantry[key];
   }
   return sortedObj;
 }
