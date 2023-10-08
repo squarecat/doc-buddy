@@ -294,7 +294,7 @@ async function getQuartermasterAnswer({ message }) {
   if (changes.length) {
     // change the question to just return the new state of the pantry
     question =
-      "Tell me what is currently in the pantry, in a nice list. Put the things we have run out of at the bottom.";
+      "We just made some changes to the pantry, tell me what is currently in there in a nice list. Put the things we have run out of at the bottom.";
   }
 
   let data2 = {
