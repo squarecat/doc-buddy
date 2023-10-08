@@ -212,7 +212,7 @@ export async function getTopic(message) {
       },
       {
         role: "user",
-        content: `Here is a question posed to you from the first-mate or Captain, is this question for the "quartermaster" regarding boat stores, the "mechanic" regarding workings of the boat, or something else? Respond with a single word, either "quartermaster", "mechanic", or "other".
+        content: `Here is a question posed to you from the first-mate or Captain, is this question for the "quartermaster" (Long John) regarding boat stores, the "mechanic" (Kaylee) regarding workings of the boat, or something else? Respond with a single word, either "quartermaster", "mechanic", or "other".
           
           ${message}
           `,
