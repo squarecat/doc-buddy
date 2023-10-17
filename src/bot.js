@@ -65,9 +65,10 @@ const onMessage = async (ctx) => {
       currentMemory,
     });
     chatEmitter.on("data", (d) => ctx.reply(d));
-    chatEmitter.on("error", (d) =>
-      ctx.reply(`I had some trouble with that: ${d.message}`)
-    );
+    chatEmitter.on("error", (d) => {
+      ctx.reply(`I had some trouble with that: ${d.message}`);
+      clearInterval(typingAnimation);
+    });
     chatEmitter.on("done", () => clearInterval(typingAnimation));
   }
 };
