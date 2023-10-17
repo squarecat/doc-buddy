@@ -20,18 +20,9 @@ export function clearHistory() {
 }
 export async function getChatResponse({ message, currentMemory }) {
   const topic = await getTopic(message);
+  const persona = topic === "other" ? "cabin boy" : topic;
 
-  const usableHistory = history.reverse().reduce(
-    (out, h, i) => {
-      const { tokens, items } = out;
-      const itemTokens = encode(h.content).length;
-      if (tokens + itemTokens > 2000) {
-        return { tokens, items };
-      }
-      return { tokens: tokens + itemTokens, items: [h, ...items] };
-    },
-    { tokens: 0, items: [] }
-  );
+  const usableHistory = getUsableHistory(persona);
   console.log(
     `[bot]: using ${usableHistory.tokens} tokens of previous history`
   );
@@ -40,7 +31,8 @@ export async function getChatResponse({ message, currentMemory }) {
       topic === "other" ? "cabin boy" : topic
     }`
   );
-  switch (topic) {
+
+  switch (persona) {
     case "mechanic": {
       return getMechanicsAnswer({
         message,
@@ -49,16 +41,17 @@ export async function getChatResponse({ message, currentMemory }) {
       });
     }
     case "quartermaster": {
-      return getQuartermasterAnswer({ message });
+      return getQuartermasterAnswer({ message, usableHistory });
     }
     default: {
-      return getGenericAnswer({ message });
+      return getGenericAnswer({ message, usableHistory });
     }
   }
 }
 
 async function getMechanicsAnswer({ message, currentMemory, usableHistory }) {
   let embeddings;
+  const systemPrompt = getSystemPrompt("mechanic");
 
   try {
     embeddings = await getEmbeddings({ text: message });
@@ -67,45 +60,41 @@ async function getMechanicsAnswer({ message, currentMemory, usableHistory }) {
     res.emit("error", new Error("Failed to get embeddings"));
   }
 
-  let messages = [
+  const messages = [
     {
       role: "system",
       content: [
-        prompt,
+        systemPrompt,
+        "\n\n",
         `You have access to the following files: \n${currentMemory
           .map((cm, i) => `${i + 1}. ${cm.name} - ${cm.description}`)
           .join("\n")}`,
       ].join("\n"),
     },
+    ...usableHistory.items,
   ];
-
-  let content = [`You are the mechanic. Here is the question: ${message}`];
-
-  if (embeddings.length) {
-    content = [
-      ...content,
-      `Here is some background information related to the next question from the manuals. If it doesn't seem relevant then ignore it:`,
-      ...embeddings.reduce(
+  if (embeddings?.length) {
+    const formattedEmbeddings = `${embeddings
+      .reduce(
         (out, e) => [...out, `File name: ${e.sourceUrl}`, `Content: ${e.text}`],
         []
-      ),
-    ];
+      )
+      .join("\n")}`;
+    messages.push({
+      role: "user",
+      content: `Here is some background information from the manuals that might be related to the next question. If it doesn't seem relevant then ignore it: \n${formattedEmbeddings}`,
+    });
   } else {
-    content = [
-      ...content,
-      `Information regarding the question was not found in any of the manuals. You can still try to answer the question, but say that your answer is not based on the manuals.`,
-    ];
+    messages.push({
+      role: "user",
+      content: `Information regarding the next question was not found in any of the manuals. You can still try to answer the question, but say that your answer is not based on the manuals.`,
+    });
   }
 
-  content = [...content, `\n\nWhat answer would you give?`];
-  messages = [
-    ...messages,
-    ...usableHistory.items,
-    {
-      role: "user",
-      content: content.join("\n"),
-    },
-  ];
+  messages.push({
+    role: "user",
+    content: message,
+  });
 
   let data = {
     userMessage: message,
@@ -117,12 +106,13 @@ async function getMechanicsAnswer({ message, currentMemory, usableHistory }) {
     frequency_penalty: 0,
     presence_penalty: 0,
     stream: true,
+    persona: "mechanic",
   };
 
   return streamResponse(data);
 }
 
-async function streamResponse({ userMessage, ...data }) {
+async function streamResponse({ persona, userMessage, ...data }) {
   const res = new EventEmitter();
   const apiKey = process.env.OPEN_AI_KEY;
 
@@ -173,8 +163,8 @@ async function streamResponse({ userMessage, ...data }) {
       res.emit("data", out);
       res.emit("done");
       history.push(
-        { role: "user", content: userMessage },
-        { role: "assistant", content: out }
+        { persona, role: "user", content: userMessage },
+        { persona, role: "assistant", content: out }
       );
       history = history.slice(-20);
     });
@@ -250,7 +240,7 @@ async function getResponse(data) {
   }
 }
 
-async function getQuartermasterAnswer({ message }) {
+async function getQuartermasterAnswer({ message, usableHistory }) {
   let pantry = await getPantry();
   const items = Object.keys(pantry).join(", ");
   let data = {
@@ -291,66 +281,100 @@ async function getQuartermasterAnswer({ message }) {
   const newPantry = await change(changes);
 
   let question = message;
-  if (changes.length) {
+  if (changes?.length) {
     // change the question to just return the new state of the pantry
     question =
       "We just made some changes to the pantry, tell me what is currently in there in a nice list. Put the things we have run out of at the bottom.";
   }
+
+  const systemPrompt = getSystemPrompt("quartermaster");
 
   let data2 = {
     model: "gpt-4",
     messages: [
       {
         role: "system",
-        content: prompt,
+        content: `${systemPrompt}\n\nHere is the current state of the ships ledger:\n${JSON.stringify(
+          newPantry,
+          null,
+          2
+        )}\n\nIf you need to list multiple items from the ledger, do so as an inventory for easy reading.`,
       },
+      ...usableHistory.items,
       {
         role: "user",
-        content: `You are the quartermaster. You are being asked a question about the ships stores. If you need to list multiple items, do so as an inventory for easy reading.
-Here is the current state of the ships pantry:
-
-${JSON.stringify(newPantry, null, 2)}
-
-Here is the question:
-
-${message}`,
+        content: question,
       },
     ],
     max_tokens: 2000,
-    temperature: 0.1,
+    temperature: 0.7,
     top_p: 1,
     frequency_penalty: 0,
     presence_penalty: 0,
     stream: true,
     userMessage: message,
+    persona: "quartermaster",
   };
 
   return await streamResponse(data2);
 }
 
-async function getGenericAnswer({ message }) {
+async function getGenericAnswer({ message, usableHistory }) {
+  const systemPrompt = getSystemPrompt("cabin boy");
   let data2 = {
     model,
     messages: [
       {
         role: "system",
-        content: prompt,
+        content: systemPrompt,
       },
+      ...usableHistory.items,
       {
         role: "user",
-        content: `You are the cabin boy. You are being asked the question:
-
-${message}`,
+        content: message,
       },
     ],
     max_tokens: 2000,
-    temperature: 0.1,
+    temperature: 0.7,
     top_p: 1,
     frequency_penalty: 0,
     presence_penalty: 0,
     stream: true,
     userMessage: message,
+    persona: "other",
   };
 
   return await streamResponse(data2);
+}
+
+function getSystemPrompt(persona) {
+  let line = `${prompt}\n\nFrom now on, you are the`;
+  switch (persona) {
+    case "cabin boy": {
+      return `${line} cabin boy.`;
+    }
+    case "quartermaster": {
+      return `${line} quartermaster.`;
+    }
+    case "mechanic": {
+      return `${line} mechanic.`;
+    }
+  }
+}
+
+function getUsableHistory(persona) {
+  return history.reverse().reduce(
+    (out, h) => {
+      const { tokens, items } = out;
+      if (h.persona !== persona) {
+        return { tokens, items };
+      }
+      const itemTokens = encode(h.content)?.length ?? 0;
+      if (tokens + itemTokens > 2000) {
+        return { tokens, items };
+      }
+      return { tokens: tokens + itemTokens, items: [h, ...items] };
+    },
+    { tokens: 0, items: [] }
+  );
 }

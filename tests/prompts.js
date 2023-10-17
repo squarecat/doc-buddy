@@ -1,5 +1,6 @@
 import { getChatResponse, getTopic } from "../src/chat.js";
 
+import { getMemoryIndex } from "../src/storage.js";
 import { savePantry } from "../src/pantry.js";
 
 const questions = [
@@ -33,10 +34,10 @@ export async function start() {
   // });
   // out2.on("data", (data) => console.log(data));
 
-  const out3 = await getChatResponse({
-    message: "Do we have enough beans?",
-  });
-  out3.on("data", (data) => console.log(data));
+  // const out3 = await getChatResponse({
+  //   message: "Do we have enough beans?",
+  // });
+  // out3.on("data", (data) => console.log(data));
 
   const out4 = await getChatResponse({
     message: "What's currently in the stores?",
@@ -47,5 +48,11 @@ export async function start() {
   //   message: "What breed of dolphins are there in the med?",
   // });
   // out5.on("data", (data) => console.log(data));
-  // console.log(out);
+
+  // const currentMemory = await getMemoryIndex();
+  // const out6 = await getChatResponse({
+  //   message: "How do I manually prime the fuel pump?",
+  //   currentMemory,
+  // });
+  // out6.on("data", (data) => console.log(data));
 }
