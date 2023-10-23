@@ -129,28 +129,66 @@ async function streamResponse({ persona, userMessage, ...data }) {
       }
     );
     const stream = response.data;
+
+    // stream.on("data", (chunk) => {
+    //   try {
+    //     const lines = chunk
+    //       .toString()
+    //       .trim()
+    //       .split("\n")
+    //       .filter(Boolean)
+    //       .map((l) => l.replace("data: ", ""));
+    //     for (let line of lines) {
+    //       if (line === "[DONE]") {
+    //         // done
+    //       } else {
+    //         // Parse the chunk as a JSON object
+    //         const data = JSON.parse(line);
+    //         let content = data?.choices[0]?.delta?.content;
+    //         if (content) {
+    //           out += content;
+    //         }
+    //       }
+    //     }
+    //     // Send immediately to allow chunks to be sent as they arrive
+    //   } catch (error) {
+    //     // End the stream but do not send the error, as this is likely the DONE message from createCompletion
+    //     console.error(error);
+    //   }
+    // });
+    let outputTokenLength = 0;
     let out = "";
+    let buffer = "";
     stream.on("data", (chunk) => {
       try {
-        const lines = chunk
-          .toString()
-          .trim()
-          .split("\n")
-          .filter(Boolean)
-          .map((l) => l.replace("data: ", ""));
-        for (let line of lines) {
+        buffer += chunk.toString();
+        const lines = buffer.split("\n\n").filter(Boolean);
+
+        for (let i = 0; i < lines.length; i++) {
+          let line = lines[i].replace("data: ", "");
+
           if (line === "[DONE]") {
             // done
-          } else {
-            // Parse the chunk as a JSON object
+            continue;
+          }
+          let content;
+          try {
             const data = JSON.parse(line);
-            let content = data?.choices[0]?.delta?.content;
-            if (content) {
-              out += content;
-            }
+            content = data?.choices[0]?.delta?.content;
+            // Successfully parsed, so remove this line from the buffer
+            buffer = buffer.substring(lines[i].length + 2);
+          } catch (err) {
+            console.log("got incomplete data, waiting for more.");
+            // Likely incomplete JSON, so break and wait for more data
+            break;
+          }
+
+          if (content) {
+            res.emit("data", content);
+            outputTokenLength += encode(content).length;
+            out += content;
           }
         }
-        // Send immediately to allow chunks to be sent as they arrive
       } catch (error) {
         // End the stream but do not send the error, as this is likely the DONE message from createCompletion
         console.error(error);
