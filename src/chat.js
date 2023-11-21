@@ -281,7 +281,7 @@ async function getQuartermasterAnswer({ message, usableHistory }) {
   let pantry = await getPantry();
   const items = Object.keys(pantry).join(", ");
   let data = {
-    model: "gpt-4",
+    model: "gpt-3.5-turbo",
     messages: [
       {
         role: "system",
@@ -327,7 +327,7 @@ async function getQuartermasterAnswer({ message, usableHistory }) {
   const systemPrompt = getSystemPrompt("quartermaster");
 
   let data2 = {
-    model: "gpt-4",
+    model: "gpt-3.5-turbo",
     messages: [
       {
         role: "system",
