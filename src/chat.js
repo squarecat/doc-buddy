@@ -184,7 +184,6 @@ async function streamResponse({ persona, userMessage, ...data }) {
           }
 
           if (content) {
-            res.emit("data", content);
             outputTokenLength += encode(content).length;
             out += content;
           }
