@@ -7,7 +7,7 @@ import fs from "fs";
 import { getEmbeddings } from "./embeddings.js";
 import path from "path";
 
-const model = process.env.OPEN_AI_MODEL || "gpt-3.5-turbo";
+const model = process.env.OPEN_AI_MODEL || "gpt-3.5-turbo-16k";
 
 const prompt = readMarkdownFile(
   path.join(path.resolve(new URL("../", import.meta.url).pathname), "prompt.md")
@@ -329,23 +329,25 @@ async function getQuartermasterAnswer({ message, usableHistory }) {
 
   const systemPrompt = getSystemPrompt("quartermaster");
 
+  const messages = [
+    {
+      role: "system",
+      content: `${systemPrompt}\n\nHere is the current state of the ships ledger:\n${JSON.stringify(
+        newPantry,
+        null,
+        2
+      )}\n\nIf you need to list multiple items from the ledger, do so as an inventory for easy reading.`,
+    },
+    ...(usableHistory.items ?? []),
+    {
+      role: "user",
+      content: question,
+    },
+  ];
+
   let data2 = {
-    model: "gpt-3.5-turbo",
-    messages: [
-      {
-        role: "system",
-        content: `${systemPrompt}\n\nHere is the current state of the ships ledger:\n${JSON.stringify(
-          newPantry,
-          null,
-          2
-        )}\n\nIf you need to list multiple items from the ledger, do so as an inventory for easy reading.`,
-      },
-      ...(usableHistory.items ?? []),
-      {
-        role: "user",
-        content: question,
-      },
-    ],
+    model: "gpt-3.5-turbo-16k",
+    messages,
     max_tokens: 2000,
     temperature: 0.7,
     top_p: 1,
