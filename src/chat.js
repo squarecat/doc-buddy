@@ -213,6 +213,7 @@ async function streamResponse({ persona, userMessage, ...data }) {
     });
   } catch (err) {
     console.error(err.response.data);
+    console.error(err.data);
     res.emit("error", new Error("Failed to get response from OpenAI"));
   }
   return res;
@@ -306,7 +307,7 @@ async function getQuartermasterAnswer({ message, usableHistory }) {
       },
       { role: "user", content: `Items: ${items}. ${message}` },
     ],
-    max_tokens: 2000,
+    max_tokens: 4000 - usableHistory.tokens,
     temperature: 0.1,
     top_p: 1,
     frequency_penalty: 0,
@@ -337,7 +338,7 @@ async function getQuartermasterAnswer({ message, usableHistory }) {
           2
         )}\n\nIf you need to list multiple items from the ledger, do so as an inventory for easy reading.`,
       },
-      ...usableHistory.items,
+      ...(usableHistory.items ?? []),
       {
         role: "user",
         content: question,
