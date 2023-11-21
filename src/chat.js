@@ -117,6 +117,7 @@ async function streamResponse({ persona, userMessage, ...data }) {
   const apiKey = process.env.OPEN_AI_KEY;
 
   try {
+    console.log("Streaming OpenAI:", JSON.stringify(data, null, 2));
     const response = await axios.post(
       "https://api.openai.com/v1/chat/completions",
       data,
@@ -259,6 +260,7 @@ export async function getTopic(message) {
 }
 
 async function getResponse(data) {
+  console.log("Querying OpenAI:", JSON.stringify(data, null, 2));
   try {
     const apiKey = process.env.OPEN_AI_KEY;
     const response = await axios.post(
