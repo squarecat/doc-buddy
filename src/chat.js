@@ -259,7 +259,7 @@ export async function getTopic(message) {
   return getResponse(data);
 }
 
-async function getResponse(data) {
+export async function getResponse(data) {
   console.log("Querying OpenAI:", JSON.stringify(data, null, 2));
   try {
     const apiKey = process.env.OPEN_AI_KEY;
@@ -293,7 +293,7 @@ async function getQuartermasterAnswer({ message, usableHistory }) {
       },
       {
         role: "user",
-        content: `Items: ${items}. Add two cans of beans to the pantry and remove 1 carrot.`,
+        content: `Items: ${items}.\nChanges: Add two cans of beans to the pantry and remove 1 carrot.`,
       },
       {
         role: "assistant",
@@ -307,9 +307,9 @@ async function getQuartermasterAnswer({ message, usableHistory }) {
         role: "assistant",
         content: `[]`,
       },
-      { role: "user", content: `Items: ${items}. ${message}` },
+      { role: "user", content: `Items: ${items}.\nChanges: ${message}` },
     ],
-    max_tokens: 4000 - usableHistory.tokens,
+    max_tokens: 400,
     temperature: 0.1,
     top_p: 1,
     frequency_penalty: 0,
